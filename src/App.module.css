@@ -1,0 +1,34 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 80px;
+}
+.outer {
+  border: 1px black solid;
+}
+.inner {
+  display: flex;
+  flex-direction: row;
+}
+.cell {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 58px;
+  height: 58px;
+  border: 1px black solid;
+  font-weight: 900;
+  user-select: none;
+  cursor: pointer;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
+.white {
+  background-color: white;
+}

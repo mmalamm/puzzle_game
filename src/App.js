@@ -1,28 +1,35 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import classes from "./App.module.css";
+import { isCellClickable, createInitialAppState, createNewState } from "./helpers";
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+export default function App() {
+  const [state, setState] = useState(createInitialAppState());
+
+  const handleClick = clickedCell => e => {
+    const isClickable = isCellClickable(clickedCell, state.emptyCell);
+    if (!isClickable) return;
+    const newState = createNewState(clickedCell, state.emptyCell, state.cells);
+    setState(newState);
+  };
+  return (
+    <div className={classes.app}>
+      <div className={classes.outer}>
+        {state.cells.map((innerArr, idx) => (
+          <div key={idx} className={classes.inner}>
+            {innerArr.map(({ c, x, y }) => (
+              <p
+                className={`${classes.cell} ${
+                  c ? classes.yellow : classes.white
+                }`}
+                key={`[${x},${y}]`}
+                onClick={handleClick({ c, x, y })}
+              >
+                {c}
+              </p>
+            ))}
+          </div>
+        ))}
       </div>
-    );
-  }
+    </div>
+  );
 }
-
-export default App;
