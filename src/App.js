@@ -10,7 +10,10 @@ import {
 export default function App() {
   const [state, setState] = useState(createInitialAppState());
   useEffect(() => {
-    isGameWon(state.grid) && alert("You win :)");
+    if (isGameWon(state.grid)) {
+      alert("You win :)");
+      setState(createInitialAppState());
+    }
   });
 
   const handleClick = clickedCell => e => {
