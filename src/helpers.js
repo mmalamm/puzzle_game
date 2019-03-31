@@ -37,7 +37,9 @@ export const isCellClickable = (cell, emptyCell) => {
 export const createNewState = (clickedCell, emptyCell, currentCells) => {
   const { x: cx, y: cy, c: cc } = clickedCell;
   const { x: ex, y: ey } = emptyCell;
-  const newCells = [...currentCells.map(arr => [...arr.map(el => ({ ...el }))])];
+  const newCells = [
+    ...currentCells.map(arr => [...arr.map(el => ({ ...el }))])
+  ];
   const newEmptyCell = { x: cx, y: cy, c: null };
   newCells[cy][cx] = newEmptyCell;
   newCells[ey][ex] = { x: ex, y: ey, c: cc };
@@ -45,4 +47,20 @@ export const createNewState = (clickedCell, emptyCell, currentCells) => {
     cells: newCells,
     emptyCell: newEmptyCell
   };
+};
+
+export const isGameWon = cells => {
+  let i = 1;
+  for (let x = 0; x < cells.length; x++) {
+    for (let y = 0; y < cells[x].length; y++) {
+      const { c } = cells[x][y];
+      if ((x !== 3 || y !== 3) && c === null) return false;
+      if (c !== `${i}`) {
+        if (x === 3 && y === 3 && c === null) return true;
+        return false;
+      }
+      i++;
+    }
+  }
+  return true;
 };

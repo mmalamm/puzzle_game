@@ -1,6 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import classes from "./App.module.css";
-import { isCellClickable, createInitialAppState, createNewState } from "./helpers";
+import {
+  isCellClickable,
+  createInitialAppState,
+  createNewState,
+  isGameWon
+} from "./helpers";
 
 export default function App() {
   const [state, setState] = useState(createInitialAppState());
@@ -11,6 +16,9 @@ export default function App() {
     const newState = createNewState(clickedCell, state.emptyCell, state.cells);
     setState(newState);
   };
+  useEffect(() => {
+    isGameWon(state.cells) && alert("You win :)");
+  });
   return (
     <div className={classes.app}>
       <div className={classes.outer}>
