@@ -25,13 +25,13 @@ export default function App() {
       {state.grid.map((row, idx) => (
         <div key={idx} className={classes.row}>
           {row.map(({ c, x, y }) => (
-            <button
+            <p
               className={`${classes.cell} ${c ? classes.tile : classes.empty}`}
               key={`[${x},${y}]`}
               onClick={handleClick({ c, x, y })}
             >
               {c}
-            </button>
+            </p>
           ))}
         </div>
       ))}
