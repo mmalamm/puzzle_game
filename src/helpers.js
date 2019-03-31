@@ -1,5 +1,4 @@
 const makeArray = () => Array.from({ length: 15 }).map((_, i) => i + 1);
-const isWithin1 = (n1, n2) => Math.abs(n1 - n2) <= 1;
 const countInverstions = arr =>
   arr.reduce(
     (inv, el, idx, a) =>
@@ -37,6 +36,7 @@ export function createInitialAppState() {
   };
 }
 
+const isWithin1 = (n1, n2) => Math.abs(n1 - n2) <= 1;
 export function isCellClickable(cell, emptyCell) {
   const { x: cx, y: cy } = cell;
   const { x: ex, y: ey } = emptyCell;
