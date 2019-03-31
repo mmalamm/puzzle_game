@@ -6,12 +6,25 @@ function shuffler(arr) {
   return arr;
 }
 
-const makeArray = () => Array.from({ length: 15 }).map((_, i) => `${i + 1}`);
+const makeArray = () => Array.from({ length: 15 }).map((_, i) => i + 1);
+
+const countInverstions = arr =>
+  arr.reduce(
+    (inv, el, idx, a) =>
+      inv + a.slice(idx + 1).filter(nestedEl => nestedEl < el).length,
+    0
+  );
+
+const createSolvableArray = () => {
+  let nums = shuffler(makeArray());
+  while (countInverstions(nums) % 2 !== 0) nums = shuffler(makeArray());
+  return nums;
+};
 
 export function createInitialAppState() {
-  const nums = shuffler(makeArray()),
+  const nums = createSolvableArray(),
     len4 = { length: 4 };
-  const cells = Array.from(len4).map((_, y) =>
+  const grid = Array.from(len4).map((_, y) =>
     Array.from(len4).map((_, x) => ({
       x,
       y,
@@ -19,8 +32,8 @@ export function createInitialAppState() {
     }))
   );
   return {
-    cells,
-    emptyCell: cells[3][3]
+    grid,
+    emptyCell: grid[3][3]
   };
 }
 const isWithin1 = (n1, n2) => Math.abs(n1 - n2) <= 1;
@@ -34,33 +47,30 @@ export const isCellClickable = (cell, emptyCell) => {
   );
 };
 
-export const createNewState = (clickedCell, emptyCell, currentCells) => {
+export const createNewState = (clickedCell, { emptyCell, grid }) => {
   const { x: cx, y: cy, c: cc } = clickedCell;
   const { x: ex, y: ey } = emptyCell;
-  const newCells = [
-    ...currentCells.map(arr => [...arr.map(el => ({ ...el }))])
-  ];
+  const newGrid = [...grid.map(row => [...row.map(cell => ({ ...cell }))])];
   const newEmptyCell = { x: cx, y: cy, c: null };
-  newCells[cy][cx] = newEmptyCell;
-  newCells[ey][ex] = { x: ex, y: ey, c: cc };
+  newGrid[cy][cx] = newEmptyCell;
+  newGrid[ey][ex] = { x: ex, y: ey, c: cc };
   return {
-    cells: newCells,
+    grid: newGrid,
     emptyCell: newEmptyCell
   };
 };
 
-export const isGameWon = cells => {
+export const isGameWon = grid => {
   let i = 1;
-  for (let x = 0; x < cells.length; x++) {
-    for (let y = 0; y < cells[x].length; y++) {
-      const { c } = cells[x][y];
+  for (let x = 0; x < grid.length; x++) {
+    for (let y = 0; y < grid[x].length; y++) {
+      const { c } = grid[x][y];
       if ((x !== 3 || y !== 3) && c === null) return false;
-      if (c !== `${i}`) {
+      if (c !== i) {
         if (x === 3 && y === 3 && c === null) return true;
         return false;
       }
       i++;
     }
   }
-  return true;
 };

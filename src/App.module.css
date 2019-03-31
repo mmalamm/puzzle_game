@@ -4,10 +4,7 @@
   align-items: center;
   padding-top: 80px;
 }
-.outer {
-  border: 1px black solid;
-}
-.inner {
+.row {
   display: flex;
   flex-direction: row;
 }
@@ -19,16 +16,21 @@
   align-items: center;
   width: 58px;
   height: 58px;
-  border: 1px black solid;
+  border: 1px #082a55 solid;
   font-weight: 900;
+  font-size: 2rem;
   user-select: none;
   cursor: pointer;
+  color: white;
+  transition: opacity .2s ease-in-out
 }
 
-.yellow {
-  background-color: yellow;
+.tile {
+  background-color: black;
+  opacity: 1;
 }
 
-.white {
-  background-color: white;
+.empty {
+  background-color: #082a55; 
+  opacity: 0
 }
