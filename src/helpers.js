@@ -1,5 +1,5 @@
 const makeArray = () => Array.from({ length: 15 }).map((_, i) => i + 1);
-const countInverstions = arr =>
+const countInversions = arr =>
   arr.reduce(
     (inv, el, idx, a) =>
       inv + a.slice(idx + 1).filter(nestedEl => nestedEl < el).length,
@@ -15,24 +15,25 @@ function shuffler(arr) {
 }
 
 function createSolvableArray() {
-  let nums = shuffler(makeArray());
-  while (countInverstions(nums) % 2 !== 0) nums = shuffler(makeArray());
-  return nums;
+  const nums = shuffler(makeArray());
+  return countInversions(nums) % 2 === 0
+    ? [[...nums, null], { x: 0, y: 0, c: null }]
+    : [[null, ...nums], { x: 3, y: 3, c: null }];
 }
 
 export function createInitialAppState() {
-  const nums = createSolvableArray(),
+  const [nums, emptyCell] = createSolvableArray(),
     len4 = { length: 4 };
   const grid = Array.from(len4).map((_, y) =>
     Array.from(len4).map((_, x) => ({
+      c: nums.pop(),
       x,
-      y,
-      c: nums.shift() || null
+      y
     }))
   );
   return {
     grid,
-    emptyCell: grid[3][3]
+    emptyCell
   };
 }
 
