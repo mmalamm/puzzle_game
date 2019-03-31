@@ -22,15 +22,12 @@
   user-select: none;
   cursor: pointer;
   color: white;
-  transition: opacity .2s ease-in-out
 }
 
 .tile {
   background-color: black;
-  opacity: 1;
 }
 
 .empty {
-  background-color: #082a55; 
-  opacity: 0
+  background-color: #082a55;
 }
