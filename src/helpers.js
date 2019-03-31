@@ -1,3 +1,12 @@
+const makeArray = () => Array.from({ length: 15 }).map((_, i) => i + 1);
+const isWithin1 = (n1, n2) => Math.abs(n1 - n2) <= 1;
+const countInverstions = arr =>
+  arr.reduce(
+    (inv, el, idx, a) =>
+      inv + a.slice(idx + 1).filter(nestedEl => nestedEl < el).length,
+    0
+  );
+
 function shuffler(arr) {
   for (let i = arr.length; i; i--) {
     let j = Math.floor(Math.random() * i);
@@ -6,20 +15,11 @@ function shuffler(arr) {
   return arr;
 }
 
-const makeArray = () => Array.from({ length: 15 }).map((_, i) => i + 1);
-
-const countInverstions = arr =>
-  arr.reduce(
-    (inv, el, idx, a) =>
-      inv + a.slice(idx + 1).filter(nestedEl => nestedEl < el).length,
-    0
-  );
-
-const createSolvableArray = () => {
+function createSolvableArray() {
   let nums = shuffler(makeArray());
   while (countInverstions(nums) % 2 !== 0) nums = shuffler(makeArray());
   return nums;
-};
+}
 
 export function createInitialAppState() {
   const nums = createSolvableArray(),
@@ -36,8 +36,8 @@ export function createInitialAppState() {
     emptyCell: grid[3][3]
   };
 }
-const isWithin1 = (n1, n2) => Math.abs(n1 - n2) <= 1;
-export const isCellClickable = (cell, emptyCell) => {
+
+export function isCellClickable(cell, emptyCell) {
   const { x: cx, y: cy } = cell;
   const { x: ex, y: ey } = emptyCell;
   const isNotEmptyCell = cx !== ex || cy !== ey;
@@ -45,9 +45,9 @@ export const isCellClickable = (cell, emptyCell) => {
   return (
     isNotEmptyCell && isNotDiagonal && isWithin1(cx, ex) && isWithin1(cy, ey)
   );
-};
+}
 
-export const createNewState = (clickedCell, { emptyCell, grid }) => {
+export function createNewState(clickedCell, { emptyCell, grid }) {
   const { x: cx, y: cy, c: cc } = clickedCell;
   const { x: ex, y: ey } = emptyCell;
   const newGrid = [...grid.map(row => [...row.map(cell => ({ ...cell }))])];
@@ -58,9 +58,9 @@ export const createNewState = (clickedCell, { emptyCell, grid }) => {
     grid: newGrid,
     emptyCell: newEmptyCell
   };
-};
+}
 
-export const isGameWon = grid => {
+export function isGameWon(grid) {
   let i = 1;
   for (let x = 0; x < grid.length; x++) {
     for (let y = 0; y < grid[x].length; y++) {
@@ -73,4 +73,4 @@ export const isGameWon = grid => {
       i++;
     }
   }
-};
+}
