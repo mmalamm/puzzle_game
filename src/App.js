@@ -17,7 +17,6 @@ export default function App() {
   });
 
   const handleClick = clickedCell => e => {
-    e.preventDefault();
     const isClickable = isCellClickable(clickedCell, state.emptyCell);
     if (!isClickable) return;
     const newState = createNewState(clickedCell, state);
