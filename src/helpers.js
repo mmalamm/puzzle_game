@@ -37,16 +37,8 @@ export function createInitialAppState() {
   };
 }
 
-export function isCellClickable(cell, emptyCell) {
-  const { x: cx, y: cy } = cell;
-  const { x: ex, y: ey } = emptyCell;
-  const isNotEmptyCell = cx !== ex || cy !== ey;
-  const isNotDiagonal = cx === ex || cy === ey;
-  return (
-    isNotEmptyCell && isNotDiagonal
-    // && isWithin1(cx, ex)
-    // && isWithin1(cy, ey)
-  );
+export function isCellClickable({ x: cx, y: cy }, { x: ex, y: ey }) {
+  return (cx !== ex || cy !== ey) && (cx === ex || cy === ey);
 }
 
 export function createNewState(clickedCell, { emptyCell, grid }) {
