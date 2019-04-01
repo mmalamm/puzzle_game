@@ -41,45 +41,47 @@ export const isCellClickable = ({ x: cx, y: cy }, { x: ex, y: ey }) =>
   (cx !== ex || cy !== ey) && (cx === ex || cy === ey);
 
 export function createNewState(clickedCell, { emptyCell, grid }) {
-  const { x: cx, y: cy } = clickedCell;
-  const { x: ex, y: ey } = emptyCell;
-  const newGrid = [...grid.map(row => [...row.map(cell => ({ ...cell }))])];
-  const newEmptyCell = { ...clickedCell, c: null };
+  const { x: cx, y: cy } = clickedCell,
+    { x: ex, y: ey } = emptyCell,
+    newGrid = [...grid.map(row => [...row.map(cell => ({ ...cell }))])],
+    newEmptyCell = { ...clickedCell, c: null };
 
   newGrid[cy][cx] = newEmptyCell;
 
-  const getC = ({ c }) => c;
-  const getCol = row => row[cx];
-
-  const valuesToWrite = (ey === cy
-    ? (cx > ex
-        ? [...newGrid[cy].slice(ex, cx), { ...clickedCell }]
-        : [{ ...clickedCell }, ...newGrid[cy].slice(cx, ex)]
-      ).filter(c => c.c !== null)
-    : cy > ey
-    ? [
-        ...grid
-          .slice(ey, cy)
-          .map(getCol)
-          .filter(getC),
-        { ...clickedCell }
-      ]
-    : [...grid.slice(cy, ey).map(getCol)]
-  ).map(getC);
-  const cellsToReplace = (ey === cy
-    ? cx > ex
-      ? [...newGrid[cy].slice(ex, cx)]
-      : [...newGrid[cy].slice(cx, ex).filter(getC), { ...emptyCell }]
-    : cy > ey
-    ? [...grid.slice(ey, cy).map(getCol)]
-    : [
-        ...newGrid
-          .slice(cy, ey)
-          .map(getCol)
-          .filter(getC),
-        { ...emptyCell }
-      ]
-  ).map((cell, i) => ({ ...cell, c: valuesToWrite[i] }));
+  const getC = ({ c }) => c,
+    getCol = row => row[cx],
+    isSameRow = ey === cy,
+    isClickedCellOnRight = cx > ex,
+    isClickedCellBelow = cy > ey,
+    valuesToWrite = (isSameRow
+      ? (isClickedCellOnRight
+          ? [...newGrid[cy].slice(ex, cx), { ...clickedCell }]
+          : [{ ...clickedCell }, ...newGrid[cy].slice(cx, ex)]
+        ).filter(getC)
+      : isClickedCellBelow
+      ? [
+          ...grid
+            .slice(ey, cy)
+            .map(getCol)
+            .filter(getC),
+          { ...clickedCell }
+        ]
+      : [...grid.slice(cy, ey).map(getCol)]
+    ).map(getC),
+    cellsToReplace = (isSameRow
+      ? isClickedCellOnRight
+        ? [...newGrid[cy].slice(ex, cx)]
+        : [...newGrid[cy].slice(cx, ex).filter(getC), { ...emptyCell }]
+      : isClickedCellBelow
+      ? [...grid.slice(ey, cy).map(getCol)]
+      : [
+          ...newGrid
+            .slice(cy, ey)
+            .map(getCol)
+            .filter(getC),
+          { ...emptyCell }
+        ]
+    ).map((cell, i) => ({ ...cell, c: valuesToWrite[i] }));
 
   cellsToReplace.forEach(cell => {
     newGrid[cell.y][cell.x] = cell;
@@ -93,9 +95,9 @@ export function createNewState(clickedCell, { emptyCell, grid }) {
 
 export function isGameWon(grid) {
   let i = 1;
-  for (let x = 0; x < grid.length; x++) {
-    for (let y = 0; y < grid[x].length; y++) {
-      const { c } = grid[x][y];
+  for (let y = 0; y < grid.length; y++) {
+    for (let x = 0; x < grid[y].length; x++) {
+      const { c } = grid[y][x];
       if ((x !== 3 || y !== 3) && c === null) return false;
       if (c !== i) {
         if (x === 3 && y === 3 && c === null) return true;
