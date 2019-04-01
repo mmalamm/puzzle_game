@@ -37,24 +37,56 @@ export function createInitialAppState() {
   };
 }
 
-const isWithin1 = (n1, n2) => Math.abs(n1 - n2) <= 1;
-export function isCellClickable(cell, emptyCell) {
-  const { x: cx, y: cy } = cell;
-  const { x: ex, y: ey } = emptyCell;
-  const isNotEmptyCell = cx !== ex || cy !== ey;
-  const isNotDiagonal = cx === ex || cy === ey;
-  return (
-    isNotEmptyCell && isNotDiagonal && isWithin1(cx, ex) && isWithin1(cy, ey)
-  );
-}
+export const isCellClickable = ({ x: cx, y: cy }, { x: ex, y: ey }) =>
+  (cx !== ex || cy !== ey) && (cx === ex || cy === ey);
 
 export function createNewState(clickedCell, { emptyCell, grid }) {
-  const { x: cx, y: cy, c: cc } = clickedCell;
+  const { x: cx, y: cy } = clickedCell;
   const { x: ex, y: ey } = emptyCell;
   const newGrid = [...grid.map(row => [...row.map(cell => ({ ...cell }))])];
   const newEmptyCell = { x: cx, y: cy, c: null };
+
   newGrid[cy][cx] = newEmptyCell;
-  newGrid[ey][ex] = { x: ex, y: ey, c: cc };
+
+  const valuesToWrite =
+    ey === cy
+      ? (cx > ex
+          ? [...newGrid[cy].slice(ex, cx), { ...clickedCell }]
+          : [{ ...clickedCell }, ...newGrid[cy].slice(cx, ex)]
+        ).filter(c => c.c !== null)
+      : cy > ey
+      ? [
+          ...grid
+            .slice(ey, cy)
+            .map(row => row[cx])
+            .filter(cell => cell.c),
+          { ...clickedCell }
+        ]
+      : [...grid.slice(cy, ey).map(row => row[cx])];
+  const cellsToReplace =
+    ey === cy
+      ? (cx > ex
+          ? [...newGrid[cy].slice(ex, cx)]
+          : [
+              ...newGrid[cy].slice(cx, ex).filter(({ c }) => c),
+              { ...emptyCell }
+            ]
+        ).map((cell, i) => ({ ...cell, c: valuesToWrite[i].c }))
+      : (cy > ey
+          ? [...grid.slice(ey, cy).map(row => row[cx])]
+          : [
+              ...newGrid
+                .slice(cy, ey)
+                .map(row => row[cx])
+                .filter(cell => cell.c),
+              { ...emptyCell }
+            ]
+        ).map((cell, i) => ({ ...cell, c: valuesToWrite[i].c }));
+
+  cellsToReplace.forEach(cell => {
+    newGrid[cell.y][cell.x] = cell;
+  });
+
   return {
     grid: newGrid,
     emptyCell: newEmptyCell
