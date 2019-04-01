@@ -44,44 +44,42 @@ export function createNewState(clickedCell, { emptyCell, grid }) {
   const { x: cx, y: cy } = clickedCell;
   const { x: ex, y: ey } = emptyCell;
   const newGrid = [...grid.map(row => [...row.map(cell => ({ ...cell }))])];
-  const newEmptyCell = { x: cx, y: cy, c: null };
+  const newEmptyCell = { ...clickedCell, c: null };
 
   newGrid[cy][cx] = newEmptyCell;
 
-  const valuesToWrite =
-    ey === cy
-      ? (cx > ex
-          ? [...newGrid[cy].slice(ex, cx), { ...clickedCell }]
-          : [{ ...clickedCell }, ...newGrid[cy].slice(cx, ex)]
-        ).filter(c => c.c !== null)
-      : cy > ey
-      ? [
-          ...grid
-            .slice(ey, cy)
-            .map(row => row[cx])
-            .filter(cell => cell.c),
-          { ...clickedCell }
-        ]
-      : [...grid.slice(cy, ey).map(row => row[cx])];
-  const cellsToReplace =
-    ey === cy
-      ? (cx > ex
-          ? [...newGrid[cy].slice(ex, cx)]
-          : [
-              ...newGrid[cy].slice(cx, ex).filter(({ c }) => c),
-              { ...emptyCell }
-            ]
-        ).map((cell, i) => ({ ...cell, c: valuesToWrite[i].c }))
-      : (cy > ey
-          ? [...grid.slice(ey, cy).map(row => row[cx])]
-          : [
-              ...newGrid
-                .slice(cy, ey)
-                .map(row => row[cx])
-                .filter(cell => cell.c),
-              { ...emptyCell }
-            ]
-        ).map((cell, i) => ({ ...cell, c: valuesToWrite[i].c }));
+  const getC = ({ c }) => c;
+  const getCol = row => row[cx];
+
+  const valuesToWrite = (ey === cy
+    ? (cx > ex
+        ? [...newGrid[cy].slice(ex, cx), { ...clickedCell }]
+        : [{ ...clickedCell }, ...newGrid[cy].slice(cx, ex)]
+      ).filter(c => c.c !== null)
+    : cy > ey
+    ? [
+        ...grid
+          .slice(ey, cy)
+          .map(getCol)
+          .filter(getC),
+        { ...clickedCell }
+      ]
+    : [...grid.slice(cy, ey).map(getCol)]
+  ).map(getC);
+  const cellsToReplace = (ey === cy
+    ? cx > ex
+      ? [...newGrid[cy].slice(ex, cx)]
+      : [...newGrid[cy].slice(cx, ex).filter(getC), { ...emptyCell }]
+    : cy > ey
+    ? [...grid.slice(ey, cy).map(getCol)]
+    : [
+        ...newGrid
+          .slice(cy, ey)
+          .map(getCol)
+          .filter(getC),
+        { ...emptyCell }
+      ]
+  ).map((cell, i) => ({ ...cell, c: valuesToWrite[i] }));
 
   cellsToReplace.forEach(cell => {
     newGrid[cell.y][cell.x] = cell;
