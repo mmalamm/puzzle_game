@@ -44,7 +44,9 @@ export function isCellClickable(cell, emptyCell) {
   const isNotEmptyCell = cx !== ex || cy !== ey;
   const isNotDiagonal = cx === ex || cy === ey;
   return (
-    isNotEmptyCell && isNotDiagonal && isWithin1(cx, ex) && isWithin1(cy, ey)
+    isNotEmptyCell && isNotDiagonal
+    // && isWithin1(cx, ex)
+    // && isWithin1(cy, ey)
   );
 }
 
@@ -54,7 +56,31 @@ export function createNewState(clickedCell, { emptyCell, grid }) {
   const newGrid = [...grid.map(row => [...row.map(cell => ({ ...cell }))])];
   const newEmptyCell = { x: cx, y: cy, c: null };
   newGrid[cy][cx] = newEmptyCell;
-  newGrid[ey][ex] = { x: ex, y: ey, c: cc };
+  // newGrid[ey][ex] = { x: ex, y: ey, c: cc };
+  if (ey === cy) {
+    // const cellsToReplace = grid[cy].slice(...[ex, cx].sort());
+    const valuesToWrite = (cx > ex
+      ? [...newGrid[cy].slice(ex, cx), { ...clickedCell }]
+      : [{ ...clickedCell }, ...newGrid[cy].slice(cx, ex)]
+    )
+      .filter(c => c.c !== null)
+      .map(c => c.c);
+    console.log(valuesToWrite);
+    const cellsToReplace = (cx > ex
+      ? [...newGrid[cy].slice(ex, cx)]
+      : [...newGrid[cy].slice(cx, ex).filter(({ c }) => c), { ...emptyCell }]
+    )
+      .map((cell, i) => ({ ...cell, c: valuesToWrite[i] }))
+      .map(({ x, y, c }) => ({ x, y, c }));
+    console.log(cellsToReplace);
+    cellsToReplace.forEach(cell => {
+      newGrid[cell.y][cell.x] = cell;
+    });
+    // const newCells = cellsToReplace.map((cell, i) => ({
+    //   c: valuesToWrite[i].c
+    // }));
+  }
+
   return {
     grid: newGrid,
     emptyCell: newEmptyCell
