@@ -30,7 +30,7 @@ export default function App() {
             <p
               className={`${classes.cell} ${c ? classes.tile : classes.empty}`}
               key={`[${x},${y}]`}
-              onClick={handleClick({ c, x, y })}
+              onMouseDown={handleClick({ c, x, y })}
             >
               {c}
             </p>
