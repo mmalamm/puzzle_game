@@ -22,19 +22,28 @@ export default function App() {
     const newState = createNewState(clickedCell, state);
     setState(newState);
   };
+  const isTouchScreen = !("maxTouchPoints" in Navigator);
   return (
     <div className={classes.app}>
       {state.grid.map((row, idx) => (
         <div key={idx} className={classes.row}>
-          {row.map(({ c, x, y }) => (
-            <p
-              className={`${classes.cell} ${c ? classes.tile : classes.empty}`}
-              key={`[${x},${y}]`}
-              onMouseDown={handleClick({ c, x, y })}
-            >
-              {c}
-            </p>
-          ))}
+          {row.map(({ c, x, y }) => {
+            const handler = handleClick({ c, x, y }),
+              interactionProp = isTouchScreen
+                ? { onTouchStart: handler }
+                : { onMouseDown: handler };
+            return (
+              <p
+                className={`${classes.cell} ${
+                  c ? classes.tile : classes.empty
+                }`}
+                key={`[${x},${y}]`}
+                {...interactionProp}
+              >
+                {c}
+              </p>
+            );
+          })}
         </div>
       ))}
     </div>
