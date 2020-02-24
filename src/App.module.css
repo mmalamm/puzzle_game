@@ -14,8 +14,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100px;
-  height: 100px;
+  /* width: 100px;
+  height: 100px; */
   border: 1px #082a55 solid;
   font-weight: 900;
   font-size: 2rem;
