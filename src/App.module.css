@@ -14,14 +14,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 58px;
-  height: 58px;
+  width: 100px;
+  height: 100px;
   border: 1px #082a55 solid;
   font-weight: 900;
   font-size: 2rem;
   user-select: none;
   cursor: pointer;
-  color: white;
+  color: red;
 }
 
 .tile {

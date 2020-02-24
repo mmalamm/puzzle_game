@@ -4,7 +4,8 @@ import {
   isCellClickable,
   createInitialAppState,
   createNewState,
-  isGameWon
+  isGameWon,
+  getBgPos
 } from "./helpers";
 
 export default function App() {
@@ -22,16 +23,14 @@ export default function App() {
     const newState = createNewState(clickedCell, state);
     setState(newState);
   };
-  const isTouchScreen = !("maxTouchPoints" in Navigator);
+
   return (
     <div className={classes.app}>
       {state.grid.map((row, idx) => (
         <div key={idx} className={classes.row}>
           {row.map(({ c, x, y }) => {
             const handler = handleClick({ c, x, y }),
-              interactionProp = isTouchScreen
-                ? { onTouchStart: handler }
-                : { onMouseDown: handler };
+              interactionProp = { onTouchStart: handler, onMouseDown: handler };
             return (
               <p
                 className={`${classes.cell} ${
@@ -39,9 +38,13 @@ export default function App() {
                 }`}
                 key={`[${x},${y}]`}
                 {...interactionProp}
-              >
-                {c}
-              </p>
+                style={{
+                  backgroundImage: `url("https://avatars2.githubusercontent.com/u/23639980?s=400&v=4")`,
+                  backgroundSize: "400px",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: getBgPos(c)
+                }}
+              ></p>
             );
           })}
         </div>

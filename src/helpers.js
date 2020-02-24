@@ -14,6 +14,15 @@ function shuffler(arr) {
   return arr;
 }
 
+export const getBgPos = (num, cellSize = 100) => {
+  if (num === null) return "300px 300px";
+  const idx = num - 1;
+  const f = cellSize;
+  const x = -(idx % 4) * f;
+  const y = -((idx / 4) | 0) * f;
+  return `${x}px ${y}px`;
+};
+
 function createSolvableArray() {
   const nums = shuffler(makeArray());
   return countInversions(nums) % 2 === 0
