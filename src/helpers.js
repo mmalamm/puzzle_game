@@ -15,11 +15,10 @@ function shuffler(arr) {
 }
 
 export const getBgPos = (num, cellSize = 100) => {
-  if (num === null) return "300px 300px";
+  if (num === null) return `${cellSize}px`;
   const idx = num - 1;
-  const f = cellSize;
-  const x = -(idx % 4) * f;
-  const y = -((idx / 4) | 0) * f;
+  const x = -(idx % 4) * cellSize;
+  const y = -((idx / 4) | 0) * cellSize;
   return `${x}px ${y}px`;
 };
 

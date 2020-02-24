@@ -9,8 +9,15 @@ import {
   getBgPos
 } from "./helpers";
 
+const urls = [
+  "https://avatars2.githubusercontent.com/u/23639980?s=460&v=4",
+  "https://avatars2.githubusercontent.com/u/12601282?s=460&v=4",
+  "https://avatars2.githubusercontent.com/u/18252722?s=460&v=4"
+];
+
 export default function App() {
   const [state, setState] = useState(createInitialAppState());
+  const [image, setImage] = useState(urls[0]);
   const size = useWindowSize();
   useEffect(() => {
     if (isGameWon(state.grid)) {
@@ -26,7 +33,7 @@ export default function App() {
     setState(newState);
   };
 
-  const cellSize = size.width > 800 ? 200 : size.width / 4;
+  const cellSize = size.width > 600 ? 150 : size.width / 4;
 
   return (
     <div className={classes.app}>
@@ -43,7 +50,7 @@ export default function App() {
                 key={`[${x},${y}]`}
                 {...interactionProp}
                 style={{
-                  backgroundImage: `url("https://avatars2.githubusercontent.com/u/23639980?s=400&v=4")`,
+                  backgroundImage: `url("${image}")`,
                   backgroundSize: cellSize * 4 + "px",
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: getBgPos(c, cellSize),
@@ -55,6 +62,26 @@ export default function App() {
           })}
         </div>
       ))}
+      <div className={classes.buttons}>
+        {urls.map(url => {
+          const handler = e => {
+            e.preventDefault();
+            setImage(url);
+          };
+          return (
+            <button
+              style={{
+                height: cellSize + "px",
+                width: cellSize + "px",
+                backgroundImage: `url("${url}")`,
+                backgroundSize: "contain",
+                margin: "2rem 1rem"
+              }}
+              onClick={handler}
+            ></button>
+          );
+        })}
+      </div>
     </div>
   );
 }
