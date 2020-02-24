@@ -33,7 +33,7 @@ export default function App() {
     setState(newState);
   };
 
-  const cellSize = size.width > 600 ? 150 : size.width / 4;
+  const cellSize = (size.width > 600 ? 150 : size.width / 4) - 10;
 
   return (
     <div className={classes.app}>
@@ -70,12 +70,14 @@ export default function App() {
           };
           return (
             <button
+              key={url}
               style={{
                 height: cellSize + "px",
                 width: cellSize + "px",
                 backgroundImage: `url("${url}")`,
                 backgroundSize: "contain",
-                margin: "2rem 1rem"
+                margin: "2rem .5rem",
+                cursor: "pointer"
               }}
               onClick={handler}
             ></button>
